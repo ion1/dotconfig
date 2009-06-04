@@ -1,0 +1,11 @@
+altscreen on
+defnonblock on
+defutf8 on
+escape ^Zz
+hardstatus ignore "%w : %h"
+startup_message off
+unsetenv DISPLAY
+unsetenv GPG_AGENT_INFO
+unsetenv SSH_AGENT_PID
+unsetenv SSH_AUTH_SOCK
+vbell off

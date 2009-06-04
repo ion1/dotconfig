@@ -177,6 +177,7 @@
 # See the debchange man page for details.
 # DEBCHANGE_RELEASE_HEURISTIC=log
 # DEBCHANGE_RELEASE_HEURISTIC=changelog
+DEBCHANGE_RELEASE_HEURISTIC=changelog
 # 
 # Introduce multiple-maintainer markers in changelog sections?
 # DEBCHANGE_MULTIMAINT=yes
@@ -331,10 +332,12 @@
 # Are there any environment variables we should preserve?  This should
 # be a comma-separated list.
 # DEBUILD_PRESERVE_ENVVARS=""
+DEBUILD_PRESERVE_ENVVARS="PATH,CCACHE_DIR"
 # 
 # How to set a preserved environment variable, in this case to set
 # FOO=bar.
 # DEBUILD_SET_ENVVAR_FOO=bar
+#DEBUILD_SET_ENVVAR_DEB_BUILD_OPTIONS=parallel=2
 # 
 # Do we check for the existence of the .orig.tar.gz before calling
 # dpkg-buildpackage?
@@ -356,6 +359,7 @@
 # Extra options given to lintian before any command-line options
 # specified.
 # DEBUILD_LINTIAN_OPTS=""
+DEBUILD_LINTIAN_OPTS="-EIi"
 #
 # Colon-separated list of options to be added to the beginning
 # of PATH once it has been sanitised
@@ -546,6 +550,7 @@
 # pkg_version.orig.tar.gz, rename it like this or do nothing?
 # Options are 'symlink'/'yes', 'rename' or 'no'
 # USCAN_SYMLINK=yes
+USCAN_SYMLINK=rename
 # 
 # Should we use DEHS style output (XML format)?
 # USCAN_DEHS_OUTPUT=no

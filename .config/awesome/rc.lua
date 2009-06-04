@@ -3,7 +3,7 @@ require("awful")
 -- Theme handling library
 require("beautiful")
 -- Notification library
-require("naughty")
+--require("naughty")
 
 -- Load Debian menu entries
 require("debian.menu")
@@ -11,9 +11,11 @@ require("debian.menu")
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
 -- The default is a dark theme
-theme_path = "/usr/share/awesome/themes/default/theme.lua"
+--theme_path = "/usr/share/awesome/themes/default/theme.lua"
 -- Uncommment this for a lighter theme
 -- theme_path = "/usr/share/awesome/themes/sky/theme.lua"
+
+theme_path = os.getenv("HOME") .. "/.config/awesome/theme.lua"
 
 -- Actually load theme
 beautiful.init(theme_path)
@@ -56,7 +58,11 @@ floatapps =
     ["pinentry"] = true,
     ["gimp"] = true,
     -- by instance
-    ["mocp"] = true
+    ["mocp"] = true,
+
+    -- local
+    ["Totem"] = true,
+    ["Dasher"] = true,
 }
 
 -- Applications to be moved to a pre-defined tag by class or instance.
@@ -68,13 +74,28 @@ apptags =
 }
 
 -- Define if we want to use titlebar on all applications.
-use_titlebar = false
+use_titlebar = true
 -- }}}
 
 -- {{{ Tags
+local mypicklayout = function (s)
+    local wa = screen[s].workarea
+    local layout
+
+    if math.max(wa.width, wa.height) < 1200 then
+        layout = awful.layout.suit.max
+    elseif wa.width >= wa.height then
+        layout = awful.layout.suit.tile
+    else
+        layout = awful.layout.suit.tile.bottom
+    end
+
+    return layout
+end
 -- Define tags table.
 tags = {}
 for s = 1, screen.count() do
+    local layout = mypicklayout(s)
     -- Each screen has its own tag table.
     tags[s] = {}
     -- Create 9 tags per screen.
@@ -82,7 +103,7 @@ for s = 1, screen.count() do
         tags[s][tagnumber] = tag(tagnumber)
         -- Add tags to screen one by one
         tags[s][tagnumber].screen = s
-        awful.layout.set(layouts[1], tags[s][tagnumber])
+        awful.layout.set(layout, tags[s][tagnumber])
     end
     -- I'm sure you want to see at least one tag.
     tags[s][1].selected = true
@@ -91,9 +112,9 @@ end
 
 -- {{{ Wibox
 -- Create a textbox widget
-mytextbox = widget({ type = "textbox", align = "right" })
+--mytextbox = widget({ type = "textbox", align = "right" })
 -- Set the default text in textbox
-mytextbox.text = "<b><small> " .. awesome.release .. " </small></b>"
+--mytextbox.text = "<b><small> " .. awesome.release .. " </small></b>"
 
 -- Create a laucher widget and a main menu
 myawesomemenu = {
@@ -174,13 +195,13 @@ for s = 1, screen.count() do
                                           end, mytasklist.buttons)
 
     -- Create the wibox
-    mywibox[s] = wibox({ position = "top", fg = beautiful.fg_normal, bg = beautiful.bg_normal })
+    mywibox[s] = wibox({ position = "left", fg = beautiful.fg_normal, bg = beautiful.bg_normal })
     -- Add widgets to the wibox - order matters
     mywibox[s].widgets = { mylauncher,
                            mytaglist[s],
                            mytasklist[s],
                            mypromptbox[s],
-                           mytextbox,
+                           --mytextbox,
                            mylayoutbox[s],
                            s == 1 and mysystray or nil }
     mywibox[s].screen = s
@@ -408,7 +429,7 @@ awful.hooks.manage.register(function (c, startup)
     -- awful.client.setslave(c)
 
     -- Honor size hints: if you want to drop the gaps between windows, set this to false.
-    -- c.size_hints_honor = false
+    c.size_hints_honor = false
 end)
 
 -- Hook function to execute when arranging the screen.
@@ -430,7 +451,7 @@ awful.hooks.arrange.register(function (screen)
 end)
 
 -- Hook called every minute
-awful.hooks.timer.register(60, function ()
-    mytextbox.text = os.date(" %a %b %d, %H:%M ")
-end)
+--awful.hooks.timer.register(60, function ()
+--    mytextbox.text = os.date(" %a %b %d, %H:%M ")
+--end)
 -- }}}

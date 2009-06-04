@@ -1,0 +1,2 @@
+#export DEBEMAIL=you@example.net
+#export EMAIL="Your Name <you@example.net>"

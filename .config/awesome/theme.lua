@@ -6,19 +6,19 @@ theme = {}
 
 theme.font          = "sans 8"
 
-theme.bg_normal     = "#222222"
-theme.bg_focus      = "#535d6c"
+theme.bg_normal     = "#efebe7"
+theme.bg_focus      = "#d6722d"
 theme.bg_urgent     = "#ff0000"
-theme.bg_minimize   = "#444444"
+theme.bg_minimize   = "#efebe7"
 
-theme.fg_normal     = "#aaaaaa"
-theme.fg_focus      = "#ffffff"
+theme.fg_normal     = "#101010"
+theme.fg_focus      = "#101010"
 theme.fg_urgent     = "#ffffff"
-theme.fg_minimize  = "#ffffff"
+theme.fg_minimize   = "#807e7c"
 
-theme.border_width  = "1"
-theme.border_normal = "#000000"
-theme.border_focus  = "#535d6c"
+theme.border_width  = "0"
+theme.border_normal = "#efebe7"
+theme.border_focus  = "#d6722d"
 theme.border_marked = "#91231c"
 
 -- There are another variables sets
@@ -72,7 +72,7 @@ theme.titlebar_maximized_button_normal_active = "/usr/share/awesome/themes/defau
 theme.titlebar_maximized_button_focus_active = "/usr/share/awesome/themes/default/titlebar/maximized_focus_active.png"
 
 -- You can use your own command to set your wallpaper
-theme.wallpaper_cmd = { "awsetbg /usr/share/awesome/themes/default/background.png" }
+--theme.wallpaper_cmd = { "awsetbg /usr/share/awesome/themes/default/background.png" }
 
 -- You can use your own layout icons like this:
 theme.layout_fairh = "/usr/share/awesome/themes/default/layouts/fairhw.png"

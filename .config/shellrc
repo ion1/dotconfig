@@ -1,0 +1,88 @@
+if ! tput hs 2>/dev/null; then
+  # Our terminfo doesn't have a statusline.
+  addinfo=
+
+  case "$TERM" in
+  xterm*|rxvt*)
+    addinfo='hs,tsl=\E]2;,fsl=^G,'
+    ;;
+  screen*)
+    addinfo='hs,tsl=\E_,fsl=\E\\,'
+    ;;
+  esac
+
+  if test -n "$addinfo"; then
+    tempfile="$(mktemp)"
+    # Dump the current terminfo and add the statusline info.
+    (
+      infocmp
+      printf "\t%s\n" "$addinfo"
+    ) >"$tempfile"
+    # Compile the new terminfo.
+    tic -x "$tempfile"
+    rm -f "$tempfile"
+  fi
+
+  unset addinfo tempfile
+fi
+
+if [ -z "$HOSTNAME" ]; then
+  export HOSTNAME="$(hostname)"
+fi
+
+export PATH="$PATH:/usr/local/bin:$HOME/.local/bin"
+
+# rubygems
+export PATH="$PATH:/var/lib/gems/1.8/bin"
+
+# icecc
+if [ -d "/usr/lib/icecc/bin" ]; then
+  export PATH="/usr/lib/icecc/bin:$PATH"
+fi
+
+# ccache
+export PATH="/usr/lib/ccache:$PATH"
+
+# Mutt requires GPG_TTY.
+export GPG_TTY="$(tty)"
+
+# environment
+if [ -e ~/.config/environment ]; then
+  . ~/.config/environment
+fi
+if [ -e ~/.config/environment."$HOSTNAME" ]; then
+  . ~/.config/environment."$HOSTNAME"
+fi
+
+# dir colors
+if [ -e ~/.dir_colors ]; then
+  eval $(dircolors -b ~/.dir_colors)
+elif [ -e /etc/DIR_COLORS ]; then
+  eval $(dircolors -b /etc/DIR_COLORS)
+else
+  eval $(dircolors -b)
+fi
+alias ls="ls --color=auto"
+
+# lesspipe
+if which lesspipe >&/dev/null; then
+  eval "$(SHELL=/bin/sh lesspipe)"
+fi
+
+# aliases
+
+alias grep="grep --color=auto"
+
+if which colordiff >&/dev/null; then
+  alias diff="colordiff"
+fi
+
+alias rot13='tr a-zA-Z n-za-mN-ZA-M'
+
+mkcd() { mkdir -pv "$@" && cd "$1"; }
+
+if [ -e ~/.config/shellrc."$HOSTNAME" ]; then
+  . ~/.config/shellrc."$HOSTNAME"
+fi
+
+# vim:set ft=sh et sw=2 sts=2:
