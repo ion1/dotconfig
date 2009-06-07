@@ -455,3 +455,5 @@ end)
 --    mytextbox.text = os.date(" %a %b %d, %H:%M ")
 --end)
 -- }}}
+
+-- vim:set et sw=4 sts=4 foldmethod=marker:
