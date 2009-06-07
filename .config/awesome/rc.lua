@@ -10,9 +10,6 @@ require("shifty")
 -- Load Debian menu entries
 require("debian.menu")
 
--- To find icons
-require("posix")
-
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
 -- The default is a dark theme
@@ -86,31 +83,11 @@ local mygeometry = function (s, struts)
     return geometry
 end
 
-local myfindicon = function (name)
-    local prefix = "/usr/share/icons"
-    local themes = { "Tangerine", "Tango", "Human", "gnome", "hicolor" }
-    local size   = "16x16"
-
-    for i, theme in ipairs(themes) do
-        local filename = prefix.."/"..theme.."/"..size.."/"..name..".png"
-        if posix.stat(filename) ~= nil then
-            return filename
-        end
-    end
-
-    return nil
-end
-
 shifty.config.tags = {
-    ["web"]  = { position = 1, exclusive = true, init = true, spawn = "x-www-browser",
-                 icon = myfindicon("apps/internet-web-browser"), icon_only = true },
+    ["web"]  = { position = 1, exclusive = true, init = true, spawn = "x-www-browser" },
     ["ssh"]  = { position = 2, exclusive = true, init = true, spawn = "gnome-terminal --role=ssh" },
-    ["term"] = { position = 3, exclusive = true, init = true,
-                 icon = myfindicon("apps/utilities-terminal"), icon_only = true },
-    ["misc"] = { position = 4, exclusive = true, init = true,
-                 icon = myfindicon("categories/applications-other"), icon_only = true },
-    ["gimp"] = { exclusive = true, spawn = "gimp",
-                 icon = myfindicon("apps/gimp"), icon_only = true },
+    ["term"] = { position = 3, exclusive = true, init = true },
+    ["gimp"] = { exclusive = true, spawn = "gimp" },
 }
 
 local gimp_toolbox_struts = { left = 186 }
