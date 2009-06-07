@@ -4,9 +4,14 @@ require("awful")
 require("beautiful")
 -- Notification library
 --require("naughty")
+-- Shifty
+require("shifty")
 
 -- Load Debian menu entries
 require("debian.menu")
+
+-- To find icons
+require("posix")
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
@@ -46,38 +51,9 @@ layouts =
     --awful.layout.suit.magnifier,
     awful.layout.suit.floating
 }
-
--- Table of clients that should be set floating. The index may be either
--- the application class or instance. The instance is useful when running
--- a console app in a terminal like (Music on Console)
---    x-terminal-emulator -name mocp -e mocp
-floatapps =
-{
-    -- by class
-    ["MPlayer"] = true,
-    ["pinentry"] = true,
-    ["gimp"] = true,
-    -- by instance
-    ["mocp"] = true,
-
-    -- local
-    ["Totem"] = true,
-    ["Dasher"] = true,
-}
-
--- Applications to be moved to a pre-defined tag by class or instance.
--- Use the screen and tags indices.
-apptags =
-{
-    -- ["Firefox"] = { screen = 1, tag = 2 },
-    -- ["mocp"] = { screen = 2, tag = 4 },
-}
-
--- Define if we want to use titlebar on all applications.
-use_titlebar = true
 -- }}}
 
--- {{{ Tags
+-- {{{ Shifty configuration
 local mypicklayout = function (s)
     local wa = screen[s].workarea
     local layout
@@ -92,22 +68,83 @@ local mypicklayout = function (s)
 
     return layout
 end
--- Define tags table.
-tags = {}
-for s = 1, screen.count() do
-    local layout = mypicklayout(s)
-    -- Each screen has its own tag table.
-    tags[s] = {}
-    -- Create 9 tags per screen.
-    for tagnumber = 1, 9 do
-        tags[s][tagnumber] = tag(tagnumber)
-        -- Add tags to screen one by one
-        tags[s][tagnumber].screen = s
-        awful.layout.set(layout, tags[s][tagnumber])
+
+local mygeometry = function (s, struts)
+    local wa = screen[s].workarea
+    local geometry = { 100, 100, 100, 100 }
+
+    if struts.left ~= nil then
+        geometry = { 0, 0, struts.left, wa.height }
+    elseif struts.right ~= nil then
+        geometry = { wa.width-struts.right, 0, struts.right, wa.height }
+    elseif struts.top ~= nil then
+        geometry = { 0, 0, wa.width, struts.top }
+    elseif struts.bottom ~= nil then
+        geometry = { 0, wa.height-struts.bottom, wa.width, struts.bottom }
     end
-    -- I'm sure you want to see at least one tag.
-    tags[s][1].selected = true
+
+    return geometry
 end
+
+local myfindicon = function (name)
+    local prefix = "/usr/share/icons"
+    local themes = { "Tangerine", "Tango", "Human", "gnome", "hicolor" }
+    local size   = "16x16"
+
+    for i, theme in ipairs(themes) do
+        local filename = prefix.."/"..theme.."/"..size.."/"..name..".png"
+        if posix.stat(filename) ~= nil then
+            return filename
+        end
+    end
+
+    return nil
+end
+
+shifty.config.tags = {
+    ["web"]  = { position = 1, exclusive = true, init = true, spawn = "x-www-browser",
+                 icon = myfindicon("apps/internet-web-browser"), icon_only = true },
+    ["ssh"]  = { position = 2, exclusive = true, init = true, spawn = "gnome-terminal --role=ssh" },
+    ["term"] = { position = 3, exclusive = true, init = true,
+                 icon = myfindicon("apps/utilities-terminal"), icon_only = true },
+    ["misc"] = { position = 4, exclusive = true, init = true,
+                 icon = myfindicon("categories/applications-other"), icon_only = true },
+    ["gimp"] = { exclusive = true, spawn = "gimp",
+                 icon = myfindicon("apps/gimp"), icon_only = true },
+}
+
+local gimp_toolbox_struts = { left = 186 }
+local gimp_dock_struts    = { right = 186 }
+
+shifty.config.apps = {
+    { match = { "Navigator", "Firefox", "Shiretoko" }, tag = "web" },
+
+    { match = { "gnome%-terminal" }, tag = "term" },
+    { match = { "^ssh$" },           tag = "ssh" },
+
+    { match = { "Gimp" },          tag = "gimp" },
+    { match = { "gimp%-toolbox" }, struts = gimp_toolbox_struts,
+                                   geometry = mygeometry(1, gimp_toolbox_struts),
+                                   skip_taskbar = true, float = true, slave = true },
+    { match = { "gimp%-dock" },    struts = gimp_dock_struts,
+                                   geometry = mygeometry(1, gimp_dock_struts),
+                                   skip_taskbar = true, float = true, slave = true },
+
+    { match = { "x%-nautilus%-desktop", "gnome%-panel" }, intrusive = true },
+
+    { match = { "MPlayer", "Totem", "Dasher" }, float = true, intrusive = true },
+}
+
+shifty.config.defaults = {
+    layout = mypicklayout(1),
+    honorsizehints = false,
+    floatBars = true,
+    sweep_delay = 5,
+}
+
+shifty.config.layouts = layouts
+
+shifty.init()
 -- }}}
 
 -- {{{ Wibox
@@ -206,6 +243,8 @@ for s = 1, screen.count() do
                            s == 1 and mysystray or nil }
     mywibox[s].screen = s
 end
+
+shifty.taglist = mytaglist
 -- }}}
 
 -- {{{ Mouse bindings
@@ -274,6 +313,44 @@ globalkeys = awful.util.table.join(
               end)
 )
 
+-- Shifty
+globalkeys = awful.util.table.join(globalkeys,
+    awful.key({ modkey                     }, "t", function() shifty.add({ rel_index = 1 }) end, nil, "new tag"),
+    awful.key({ modkey, "Control"          }, "t", function() shifty.add({ rel_index = 1, nopopup = true }) end, nil, "new tag in bg"),
+    awful.key({ modkey,                    }, "n", shifty.rename, nil, "tag rename"),
+    awful.key({ modkey, "Control", "Shift" }, "c", shifty.del, nil, "tag delete"))
+
+for i = 1, (shifty.config.maxtags or 9) do
+    globalkeys = awful.util.table.join(globalkeys,
+        awful.key({ modkey }, i,
+                  function ()
+                      local t = awful.tag.viewonly(shifty.getpos(i))
+                  end),
+
+        awful.key({ modkey, "Control" }, i,
+                  function ()
+                      local t = shifty.getpos(i)
+                      t.selected = not t.selected
+                  end),
+
+        awful.key({ modkey, "Control", "Shift" }, i,
+                  function ()
+                      if client.focus then
+                          awful.client.toggletag(shifty.getpos(i))
+                      end
+                  end),
+
+        -- move clients to other tags
+        awful.key({ modkey, "Shift" }, i,
+                  function ()
+                      if client.focus then
+                          local t = shifty.getpos(i)
+                          awful.client.movetotag(t)
+                          awful.tag.viewonly(t)
+                      end
+                  end))
+end
+
 -- Client awful tagging: this is useful to tag some clients and then do stuff like move to tag on them
 clientkeys = awful.util.table.join(
     awful.key({ modkey,           }, "f",      function (c) c.fullscreen = not c.fullscreen  end),
@@ -290,53 +367,10 @@ clientkeys = awful.util.table.join(
         end)
 )
 
--- Compute the maximum number of digit we need, limited to 9
-keynumber = 0
-for s = 1, screen.count() do
-   keynumber = math.min(9, math.max(#tags[s], keynumber));
-end
-
-for i = 1, keynumber do
-    globalkeys = awful.util.table.join(globalkeys,
-        awful.key({ modkey }, i,
-                  function ()
-                        local screen = mouse.screen
-                        if tags[screen][i] then
-                            awful.tag.viewonly(tags[screen][i])
-                        end
-                  end),
-        awful.key({ modkey, "Control" }, i,
-                  function ()
-                      local screen = mouse.screen
-                      if tags[screen][i] then
-                          tags[screen][i].selected = not tags[screen][i].selected
-                      end
-                  end),
-        awful.key({ modkey, "Shift" }, i,
-                  function ()
-                      if client.focus and tags[client.focus.screen][i] then
-                          awful.client.movetotag(tags[client.focus.screen][i])
-                      end
-                  end),
-        awful.key({ modkey, "Control", "Shift" }, i,
-                  function ()
-                      if client.focus and tags[client.focus.screen][i] then
-                          awful.client.toggletag(tags[client.focus.screen][i])
-                      end
-                  end),
-        awful.key({ modkey, "Shift" }, "F" .. i,
-                  function ()
-                      local screen = mouse.screen
-                      if tags[screen][i] then
-                          for k, c in pairs(awful.client.getmarked()) do
-                              awful.client.movetotag(tags[screen][i], c)
-                          end
-                      end
-                   end))
-end
-
 -- Set keys
 root.keys(globalkeys)
+shifty.config.globalkeys = globalkeys
+shifty.config.clientkeys = clientkeys
 -- }}}
 
 -- {{{ Hooks
@@ -371,65 +405,6 @@ awful.hooks.mouse_enter.register(function (c)
         and awful.client.focus.filter(c) then
         client.focus = c
     end
-end)
-
--- Hook function to execute when a new client appears.
-awful.hooks.manage.register(function (c, startup)
-    -- If we are not managing this application at startup,
-    -- move it to the screen where the mouse is.
-    -- We only do it for filtered windows (i.e. no dock, etc).
-    if not startup and awful.client.focus.filter(c) then
-        c.screen = mouse.screen
-    end
-
-    if use_titlebar then
-        -- Add a titlebar
-        awful.titlebar.add(c, { modkey = modkey })
-    end
-    -- Add mouse bindings
-    c:buttons(awful.util.table.join(
-        awful.button({ }, 1, function (c) client.focus = c; c:raise() end),
-        awful.button({ modkey }, 1, awful.mouse.client.move),
-        awful.button({ modkey }, 3, awful.mouse.client.resize)
-    ))
-    -- New client may not receive focus
-    -- if they're not focusable, so set border anyway.
-    c.border_width = beautiful.border_width
-    c.border_color = beautiful.border_normal
-
-    -- Check if the application should be floating.
-    local cls = c.class
-    local inst = c.instance
-    if floatapps[cls] ~= nil then
-        awful.client.floating.set(c, floatapps[cls])
-    elseif floatapps[inst] ~= nil then
-        awful.client.floating.set(c, floatapps[inst])
-    end
-
-    -- Check application->screen/tag mappings.
-    local target
-    if apptags[cls] then
-        target = apptags[cls]
-    elseif apptags[inst] then
-        target = apptags[inst]
-    end
-    if target then
-        c.screen = target.screen
-        awful.client.movetotag(tags[target.screen][target.tag], c)
-    end
-
-    -- Do this after tag mapping, so you don't see it on the wrong tag for a split second.
-    client.focus = c
-
-    -- Set key bindings
-    c:keys(clientkeys)
-
-    -- Set the windows at the slave,
-    -- i.e. put it at the end of others instead of setting it master.
-    -- awful.client.setslave(c)
-
-    -- Honor size hints: if you want to drop the gaps between windows, set this to false.
-    c.size_hints_honor = false
 end)
 
 -- Hook function to execute when arranging the screen.
