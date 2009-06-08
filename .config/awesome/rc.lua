@@ -4,7 +4,8 @@ require("awful")
 require("beautiful")
 -- Notification library
 --require("naughty")
--- Shifty
+
+require("rodentbane")
 require("shifty")
 
 -- Load Debian menu entries
@@ -289,6 +290,10 @@ globalkeys = awful.util.table.join(
                   awful.util.getdir("cache") .. "/history_eval")
               end)
 )
+
+-- Rodentbane
+globalkeys = awful.util.table.join(globalkeys,
+    awful.key({ modkey, "Control" }, "m", rodentbane.start))
 
 -- Shifty
 globalkeys = awful.util.table.join(globalkeys,
