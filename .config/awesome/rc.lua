@@ -117,7 +117,6 @@ shifty.config.defaults = {
     layout = mypicklayout(1),
     honorsizehints = false,
     floatBars = true,
-    sweep_delay = 5,
 }
 
 shifty.config.layouts = layouts
