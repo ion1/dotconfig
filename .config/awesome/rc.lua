@@ -111,11 +111,12 @@ shifty.config.apps = {
     { match = { "x%-nautilus%-desktop", "gnome%-panel" }, intrusive = true },
 
     { match = { "MPlayer", "Totem", "Dasher" }, float = true, intrusive = true },
+
+    { match = { "" }, honorsizehints = false },
 }
 
 shifty.config.defaults = {
     layout = mypicklayout(1),
-    honorsizehints = false,
     floatBars = true,
 }
 
