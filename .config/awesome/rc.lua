@@ -85,10 +85,9 @@ local mygeometry = function (s, struts)
 end
 
 shifty.config.tags = {
-    ["web"]  = { position = 1, exclusive = true, init = true, spawn = "x-www-browser" },
-    ["ssh"]  = { position = 2, exclusive = true, init = true, spawn = "gnome-terminal --role=ssh" },
-    ["term"] = { position = 3, exclusive = true, init = true },
-    ["gimp"] = { exclusive = true, spawn = "gimp" },
+    ["web"]  = { position = 1, init = true },
+    ["ssh"]  = { position = 2, init = true },
+    ["term"] = { position = 3, init = true },
 }
 
 local gimp_toolbox_struts = { left = 186 }
@@ -118,6 +117,7 @@ shifty.config.apps = {
 shifty.config.defaults = {
     layout = mypicklayout(1),
     mwfact = 0.5,
+    exclusive = true,
     floatBars = true,
 }
 
