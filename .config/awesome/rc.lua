@@ -117,6 +117,7 @@ shifty.config.apps = {
 
 shifty.config.defaults = {
     layout = mypicklayout(1),
+    mwfact = 0.5,
     floatBars = true,
 }
 
