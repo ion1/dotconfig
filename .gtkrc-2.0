@@ -1,0 +1,12 @@
+# /desktop/gnome/interface/font_name
+gtk-font-name = "Sans 8"
+
+# /desktop/gnome/interface/gtk_theme
+gtk-theme-name = "Human"
+
+# /desktop/gnome/interface/icon_theme
+gtk-icon-theme-name = "Tangerine"
+
+# /desktop/gnome/interface/gtk_key_theme
+gtk-key-theme-name = "Emacs"
+
