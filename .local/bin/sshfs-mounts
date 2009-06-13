@@ -1,0 +1,26 @@
+#!/bin/sh
+set -e
+
+is_mounted() {
+	cut -d' ' -f2 /proc/mounts | grep -q "^$1\$"
+}
+
+do_mount() {
+	host="$1"
+	mpoint="$2"
+
+	if ! is_mounted "$mpoint"; then
+		mkdir -p "$mpoint"
+		mount.fuse "sshfs#$host" "$mpoint" -o idmap=user
+	fi
+}
+
+for h in alku.heh.fi luotain.local hapatus.local tela.local virhe.local; do
+	(
+		if fping -q "$h"; then
+			do_mount "$h:/home" "$HOME/.mnt/$h/home"
+		fi
+	) &
+done
+
+wait
