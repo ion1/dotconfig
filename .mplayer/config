@@ -16,6 +16,8 @@ lavdopts=fast=1:skiploopfilter=all
 #lavdopts=lowres=1:fast=1:skiploopfilter=all
 ## :skipidct=all:skipframe=nonref
 
+ao=pulse,alsa,
+
 slang=en,fi
 alang=en,fi
 
