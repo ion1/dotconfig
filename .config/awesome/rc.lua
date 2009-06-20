@@ -109,7 +109,7 @@ shifty.config.apps = {
 
     { match = { "x%-nautilus%-desktop", "gnome%-panel" }, intrusive = true },
 
-    { match = { "cellwriter", "Dasher", "Event Tester", "MPlayer", "scim", "Totem" }, float = true, intrusive = true },
+    { match = { "cellwriter", "Dasher", "^Do$", "Event Tester", "MPlayer", "scim", "Totem" }, float = true, intrusive = true },
 
     { match = { "" }, honorsizehints = false },
 }
