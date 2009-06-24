@@ -44,7 +44,7 @@ add_remote() {
 do_commit() {
   local treehash="$(git write-tree)"
 
-  if [ "$treehash" = "$(git rev-parse refs/heads/"$branch":)" ]; then
+  if $branch_exists && [ "$treehash" = "$(git rev-parse refs/heads/"$branch":)" ]; then
     >&2 printf "No changes, aborting\n"
     return 1
   fi
