@@ -51,6 +51,7 @@ module("rodentbane")
 
 -- Local data
 local bindings = {}
+local history = {}
 local current = nil
 local wiboxes = nil
 
@@ -144,6 +145,9 @@ end
 --- Cut the navigation area into a direction.
 -- @param dir Direction to cut to {"up", "right", "down", "left"}.
 function cut(dir)
+    -- Store previous area
+    table.insert(history, 1, awful.util.table.join(current))
+
     -- Cut in a direction
     if dir == "up" then
         current.height = math.floor(current.height/2)
@@ -166,6 +170,9 @@ end
 -- @param ratio Ratio of movement, multiplied by the size of the current area, 
 -- defaults to 0.5 (ie. half the area size.
 function move(dir, ratio)
+    -- Store previous area
+    table.insert(history, 1, awful.util.table.join(current))
+
     -- Default to ratio 0.5
     local rt = ratio or 0.5
 
@@ -312,6 +319,17 @@ function click(button)
     awful.util.spawn_with_shell(command)
 end
 
+--- Undo a change to the area
+function undo()
+    -- Restore area
+    if #history > 0 then
+        current = history[1]
+        table.remove(history, 1)
+
+        draw()
+    end
+end
+
 --- Convenience function to bind to default keys.
 function binddefault()
     -- Cut with hjkl
@@ -325,6 +343,9 @@ function binddefault()
     bind({"Shift"}, "j", {move, "down"})
     bind({"Shift"}, "k", {move, "up"})
     bind({"Shift"}, "l", {move, "right"})
+
+    -- Undo with u
+    bind({}, "u", undo)
     
     -- Left click with space
     bind({}, "Space", function () 
@@ -363,7 +384,9 @@ end
 
 --- Start the navigation sequence.
 -- @param screen Screen to start navigation on, defaults to current screen.
-function start(screen)
+-- @param recall Whether the previous area should be recalled (defaults to 
+-- false).
+function start(screen, recall)
     -- Default to current screen
     local scr = screen or capi.mouse.screen
 
@@ -378,8 +401,16 @@ function start(screen)
         init()
     end
 
-    -- Start with a complete area
-    current = capi.screen[scr].workarea
+    -- Empty current area if needed
+    if not recall then
+        -- Start with a complete area
+        current = capi.screen[scr].workarea
+
+        -- Empty history
+        history = {}
+    end
+
+    -- Move to the right screen
     current.screen = scr
 
     -- Start the keygrabber
@@ -391,9 +422,6 @@ end
 
 --- Stop the navigation sequence without doing anything.
 function stop()
-    -- Empty current area
-    current = {}
-
     -- Stop the keygrabber
     capi.keygrabber.stop()
 
