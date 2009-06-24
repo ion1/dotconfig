@@ -1,0 +1,79 @@
+#!/bin/sh
+set -e
+
+branch=upstream
+
+tempdir="$(mktemp -d --tmpdir dotconfig-update-upstream.XXXXXXXXXX)"
+trap 'rm -fr $tempdir' 0 1 2 13 15
+
+export GIT_INDEX_FILE="$tempdir/index"
+
+branch_exists=false
+if git show-ref --quiet --verify refs/heads/"$branch"; then
+  branch_exists=true
+fi
+
+if $branch_exists; then
+  git ls-tree -r --full-name "$branch" | git update-index --index-info
+fi
+
+add_file() {
+  printf "Adding %s (%s)\n" "$1" "$2"
+
+  local filehash="$(git hash-object -w "$2")"
+  printf "%s %s %s\t%s\n" 100644 blob "$filehash" "$1" |\
+    git update-index --index-info
+}
+
+add_input() {
+  local tempfile="$(mktemp --tmpdir="$tempdir")"
+  cat >"$tempfile"
+  add_file "$1" "$tempfile"
+}
+
+add_remote() {
+  printf "Downloading %s\n" "$2"
+
+  local tempfile="$(mktemp --tmpdir="$tempdir")"
+  rm -f "$tempfile"
+  wget -q -O "$tempfile" "$2"
+
+  add_file "$1" "$tempfile"
+}
+
+do_commit() {
+  local treehash="$(git write-tree)"
+
+  if [ "$treehash" = "$(git rev-parse refs/heads/"$branch":)" ]; then
+    >&2 printf "No changes, aborting\n"
+    return 1
+  fi
+
+  local changelog="$tempdir/changelog"
+
+  printf "Automatic commit by dotconfig-update-upstream\n" >"$changelog"
+
+  printf "Committing\n"
+
+  local commithash
+  if $branch_exists; then
+    commithash="$(git commit-tree "$treehash" -p "$branch" <"$changelog")"
+  else
+    commithash="$(git commit-tree "$treehash" <"$changelog")"
+  fi
+
+  git update-ref refs/heads/"$branch" "$commithash"
+}
+
+add_file .bashrc /etc/skel/.bashrc
+add_file .config/awesome/rc.lua /etc/xdg/awesome/rc.lua
+add_remote .config/awesome/rodentbane.lua 'http://git.glacicle.com/?p=awesome/rodentbane.git;a=blob_plain;f=rodentbane.lua;hb=HEAD'
+add_remote .config/awesome/shifty.lua 'http://git.mercenariesguild.net/?p=awesome.git;a=blob_plain;f=lib/shifty.lua.in;hb=shifty-master'
+add_file .config/awesome/theme.lua /usr/share/awesome/themes/default/theme.lua
+add_file .devscripts /usr/share/devscripts/conf.default
+printf "*\n" | add_input .gitignore
+add_file .mplayer/input.conf /etc/mplayer/input.conf
+
+do_commit
+
+# vim:set et sw=2 sts=2:
