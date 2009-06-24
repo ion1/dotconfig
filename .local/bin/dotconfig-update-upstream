@@ -13,9 +13,11 @@ if git show-ref --quiet --verify refs/heads/"$branch"; then
   branch_exists=true
 fi
 
-if $branch_exists; then
-  git ls-tree -r --full-name "$branch" | git update-index --index-info
-fi
+# Do not initialize the index with the previous tree, since the script is going
+# to add every file anyway.
+#if $branch_exists; then
+#  git ls-tree -r --full-name "$branch" | git update-index --index-info
+#fi
 
 add_file() {
   printf "Adding %s (%s)\n" "$1" "$2"
