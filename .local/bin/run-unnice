@@ -1,0 +1,44 @@
+#!/bin/sh
+
+# Run a program with the caller’s credentials but with niceness only root
+# can set.
+
+set -e
+
+name="$(basename "$0")"
+
+nice="$NICE"
+ionice_class="$IONICE_CLASS"
+ionice_priority="$IONICE_PRIORITY"
+
+if [ "$name" = "run-nice" ]; then
+  nice="${nice:-19}"
+  ionice_class="${ionice_class:-2}"
+  ionice_priority="${ionice_priority:-7}"
+else
+  nice="${nice:--1}"
+  ionice_class="${ionice_class:-2}"
+  ionice_priority="${ionice_priority:-0}"
+fi
+
+run_if_have() {
+  local cmd="$1"; shift
+
+  if which -- "$cmd" >/dev/null 2>&1; then
+    "$@"
+  else
+    >&2 printf "%s: %s not found, skipping it\n" "$name" "$cmd"
+  fi
+}
+
+sudo_if_needed() {
+  "$@" >/dev/null 2>&1 || sudo -- "$@"
+}
+
+run_if_have renice sudo_if_needed renice "$nice" "$$" >/dev/null
+run_if_have ionice sudo_if_needed ionice \
+  -c "$ionice_class" -n "$ionice_priority" -p "$$" >/dev/null
+
+exec "$@"
+
+# vim:set et sw=2 sts=2:

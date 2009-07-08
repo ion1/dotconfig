@@ -1,0 +1,8 @@
+#!/bin/sh
+for host; do
+  (gpg -a --export-secret-keys ; gpg -a --export) | \
+    ssh "$host" gpg --import \; \
+                gpg -a --export-secret-keys \; \
+		gpg -a --export | \
+    gpg --import
+done
