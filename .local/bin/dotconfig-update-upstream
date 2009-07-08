@@ -20,27 +20,35 @@ fi
 #fi
 
 add_file() {
-  printf "Adding %s (%s)\n" "$1" "$2"
+  local path="$1"; shift
+  local localpath="$1"; shift
 
-  local filehash="$(git hash-object -w "$2")"
-  printf "%s %s %s\t%s\n" 100644 blob "$filehash" "$1" |\
+  printf "Adding %s (%s)\n" "$path" "$localpath"
+
+  local filehash="$(git hash-object -w "$localpath")"
+  printf "%s %s %s\t%s\n" 100644 blob "$filehash" "$path" |\
     git update-index --index-info
 }
 
 add_input() {
+  local path="$1"; shift
+
   local tempfile="$(mktemp --tmpdir="$tempdir")"
   >"$tempfile" cat
-  add_file "$1" "$tempfile"
+  add_file "$path" "$tempfile"
 }
 
 add_remote() {
-  printf "Downloading %s\n" "$2"
+  local path="$1"; shift
+  local uri="$1"; shift
+
+  printf "Downloading %s\n" "$uri"
 
   local tempfile="$(mktemp --tmpdir="$tempdir")"
   rm -f "$tempfile"
-  wget -q -O "$tempfile" "$2"
+  wget -q -O "$tempfile" "$uri"
 
-  add_file "$1" "$tempfile"
+  add_file "$path" "$tempfile"
 }
 
 do_commit() {
