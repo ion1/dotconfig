@@ -35,25 +35,28 @@ parent_branch="${local_ref:-$remote_ref}"
 #fi
 
 add_file() {
+  local mode="$1"; shift
   local path="$1"; shift
   local localpath="$1"; shift
 
   printf "Adding %s (%s)\n" "$path" "$localpath"
 
   local filehash="$(git hash-object -w "$localpath")"
-  printf "%s %s %s\t%s\n" 100644 blob "$filehash" "$path" |\
+  printf "100%s %s %s\t%s\n" "$mode" blob "$filehash" "$path" |\
     git update-index --index-info
 }
 
 add_input() {
+  local mode="$1"; shift
   local path="$1"; shift
 
   local tempfile="$(mktemp --tmpdir="$tempdir")"
   >"$tempfile" cat
-  add_file "$path" "$tempfile"
+  add_file "$mode" "$path" "$tempfile"
 }
 
 add_remote() {
+  local mode="$1"; shift
   local path="$1"; shift
   local uri="$1"; shift
 
@@ -63,7 +66,7 @@ add_remote() {
   rm -f "$tempfile"
   wget -q -O "$tempfile" "$uri"
 
-  add_file "$path" "$tempfile"
+  add_file "$mode" "$path" "$tempfile"
 }
 
 do_commit() {
@@ -91,19 +94,19 @@ do_commit() {
   git update-ref refs/heads/"$branch" "$commithash"
 }
 
-add_file .bashrc /etc/skel/.bashrc
-add_file .config/awesome/rc.lua /etc/xdg/awesome/rc.lua
-add_file .config/awesome/theme.lua /usr/share/awesome/themes/default/theme.lua
-add_file .devscripts /usr/share/devscripts/conf.default
-add_file .mplayer/input.conf /etc/mplayer/input.conf
+add_file 644 .bashrc /etc/skel/.bashrc
+add_file 644 .config/awesome/rc.lua /etc/xdg/awesome/rc.lua
+add_file 644 .config/awesome/theme.lua /usr/share/awesome/themes/default/theme.lua
+add_file 644 .devscripts /usr/share/devscripts/conf.default
+add_file 644 .mplayer/input.conf /etc/mplayer/input.conf
 
 rodentbane_uri='http://git.glacicle.com/?p=awesome/rodentbane.git;a=blob_plain;f=rodentbane.lua;hb=HEAD'
 shifty_uri='http://git.mercenariesguild.net/?p=awesome.git;a=blob_plain;f=lib/shifty.lua.in;hb=shifty-master'
 
-add_remote .config/awesome/rodentbane.lua "$rodentbane_uri"
-add_remote .config/awesome/shifty.lua "$shifty_uri"
+add_remote 644 .config/awesome/rodentbane.lua "$rodentbane_uri"
+add_remote 644 .config/awesome/shifty.lua "$shifty_uri"
 
-printf "*\n" | add_input .gitignore
+printf "*\n" | add_input 644 .gitignore
 
 do_commit
 
