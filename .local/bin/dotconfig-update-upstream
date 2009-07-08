@@ -69,12 +69,17 @@ do_commit() {
 
 add_file .bashrc /etc/skel/.bashrc
 add_file .config/awesome/rc.lua /etc/xdg/awesome/rc.lua
-add_remote .config/awesome/rodentbane.lua 'http://git.glacicle.com/?p=awesome/rodentbane.git;a=blob_plain;f=rodentbane.lua;hb=HEAD'
-add_remote .config/awesome/shifty.lua 'http://git.mercenariesguild.net/?p=awesome.git;a=blob_plain;f=lib/shifty.lua.in;hb=shifty-master'
 add_file .config/awesome/theme.lua /usr/share/awesome/themes/default/theme.lua
 add_file .devscripts /usr/share/devscripts/conf.default
-printf "*\n" | add_input .gitignore
 add_file .mplayer/input.conf /etc/mplayer/input.conf
+
+rodentbane_uri='http://git.glacicle.com/?p=awesome/rodentbane.git;a=blob_plain;f=rodentbane.lua;hb=HEAD'
+shifty_uri='http://git.mercenariesguild.net/?p=awesome.git;a=blob_plain;f=lib/shifty.lua.in;hb=shifty-master'
+
+add_remote .config/awesome/rodentbane.lua "$rodentbane_uri"
+add_remote .config/awesome/shifty.lua "$shifty_uri"
+
+printf "*\n" | add_input .gitignore
 
 do_commit
 
