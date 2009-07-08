@@ -8,15 +8,30 @@ trap 'rm -fr "$tempdir"' 0 1 2 13 15
 
 export GIT_INDEX_FILE="$tempdir/index"
 
-branch_exists=false
-if git show-ref --quiet --verify refs/heads/"$branch"; then
-  branch_exists=true
+local_ref=refs/heads/"$branch"
+if ! git show-ref --quiet --verify "$local_ref"; then
+  local_ref=
 fi
+
+remote_ref=refs/remotes/origin/"$branch"
+if ! git show-ref --quiet --verify "$remote_ref"; then
+  remote_ref=
+fi
+
+if [ -n "$local_ref" ] && [ -n "$remote_ref" ]; then
+  if [ "$(git show-ref --hash --verify "$local_ref")" != \
+       "$(git show-ref --hash --verify "$remote_ref")" ]; then
+    >&2 printf "%s does not match with %s, aborting\n" "$local_ref" "$remote_ref"
+    exit 1
+  fi
+fi
+
+parent_branch="${local_ref:-$remote_ref}"
 
 # Do not initialize the index with the previous tree, since the script is going
 # to add every file anyway.
-#if $branch_exists; then
-#  git ls-tree -r --full-name "$branch" | git update-index --index-info
+#if [ -n "$parent_branch" ]; then
+#  git ls-tree -r --full-name "$parent_branch" | git update-index --index-info
 #fi
 
 add_file() {
@@ -54,7 +69,8 @@ add_remote() {
 do_commit() {
   local treehash="$(git write-tree)"
 
-  if $branch_exists && [ "$treehash" = "$(git rev-parse refs/heads/"$branch":)" ]; then
+  if [ -n "$parent_branch" ] && \
+     [ "$treehash" = "$(git rev-parse "$parent_branch":)" ]; then
     >&2 printf "No changes, aborting\n"
     return 1
   fi
@@ -66,8 +82,8 @@ do_commit() {
   printf "Committing\n"
 
   local commithash
-  if $branch_exists; then
-    commithash="$(git commit-tree "$treehash" -p "$branch" <"$changelog")"
+  if [ -n "$parent_branch" ]; then
+    commithash="$(git commit-tree "$treehash" -p "$parent_branch" <"$changelog")"
   else
     commithash="$(git commit-tree "$treehash" <"$changelog")"
   fi
