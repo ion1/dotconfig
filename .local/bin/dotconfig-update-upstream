@@ -102,9 +102,11 @@ add_file 644 .mplayer/input.conf /etc/mplayer/input.conf
 
 rodentbane_uri='http://git.glacicle.com/?p=awesome/rodentbane.git;a=blob_plain;f=rodentbane.lua;hb=HEAD'
 shifty_uri='http://git.mercenariesguild.net/?p=awesome.git;a=blob_plain;f=lib/shifty.lua.in;hb=shifty-master'
+ximkeys_uri='http://www.pixelbeat.org/scripts/ximkeys'
 
 add_remote 644 .config/awesome/rodentbane.lua "$rodentbane_uri"
 add_remote 644 .config/awesome/shifty.lua "$shifty_uri"
+add_remote 755 .local/bin/ximkeys "$ximkeys_uri"
 
 printf "*\n" | add_input 644 .gitignore
 
