@@ -7,6 +7,8 @@ tempdir="$(mktemp -d --tmpdir dotconfig-update-upstream.XXXXXXXXXX)"
 trap 'rm -fr "$tempdir"' 0 1 2 13 15
 
 export GIT_INDEX_FILE="$tempdir/index"
+export GIT_WORK_TREE="$tempdir/working-tree"
+mkdir -p "$GIT_WORK_TREE"
 
 local_ref=refs/heads/"$branch"
 if ! git show-ref --quiet --verify "$local_ref"; then
@@ -32,6 +34,7 @@ parent_branch="${local_ref:-$remote_ref}"
 # to add every file anyway.
 #if [ -n "$parent_branch" ]; then
 #  git ls-tree -r --full-name "$parent_branch" | git update-index --index-info
+#  git checkout-index -a
 #fi
 
 add_file() {
@@ -39,18 +42,14 @@ add_file() {
   local path="$1"; shift
   local localpath="$1"; shift
 
-  printf "Adding %s (%s)\n" "$path" "$localpath"
-
-  local filehash="$(git hash-object -w "$localpath")"
-  printf "100%s %s %s\t%s\n" "$mode" blob "$filehash" "$path" |\
-    git update-index --index-info
+  install -D -m "$mode" "$localpath" "$GIT_WORK_TREE/$path"
 }
 
 add_input() {
   local mode="$1"; shift
   local path="$1"; shift
 
-  local tempfile="$(mktemp --tmpdir="$tempdir")"
+  local tempfile="$tempdir/tempfile"
   >"$tempfile" cat
   add_file "$mode" "$path" "$tempfile"
 }
@@ -62,7 +61,7 @@ add_remote() {
 
   printf "Downloading %s\n" "$uri"
 
-  local tempfile="$(mktemp --tmpdir="$tempdir")"
+  local tempfile="$tempdir/tempfile"
   rm -f "$tempfile"
   wget -q -O "$tempfile" "$uri"
 
@@ -70,6 +69,10 @@ add_remote() {
 }
 
 do_commit() {
+  # Not ls-files --exclude-standard, since we have everything in .gitignore,
+  # but still want to add everything.
+  git ls-files -z -dmo | xargs -0r git update-index --add --remove --
+
   local treehash="$(git write-tree)"
 
   if [ -n "$parent_branch" ] && \
