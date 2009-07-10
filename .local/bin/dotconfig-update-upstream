@@ -33,7 +33,8 @@ parent_branch="${local_ref:-$remote_ref}"
 # Do not initialize the index with the previous tree, since the script is going
 # to add every file anyway.
 #if [ -n "$parent_branch" ]; then
-#  git ls-tree -r --full-name "$parent_branch" | git update-index --index-info
+#  git ls-tree -z -r --full-name "$parent_branch" | \
+#    git update-index -z --index-info
 #  git checkout-index -a
 #fi
 
@@ -71,7 +72,7 @@ add_remote() {
 do_commit() {
   # Not ls-files --exclude-standard, since we have everything in .gitignore,
   # but still want to add everything.
-  git ls-files -z -dmo | xargs -0r git update-index --add --remove --
+  git ls-files -z -dmo | git update-index -z --add --remove --stdin
 
   local treehash="$(git write-tree)"
 
