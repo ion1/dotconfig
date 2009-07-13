@@ -154,9 +154,10 @@ nnoremap <C-J> 1<C-D>:set scroll=0<CR>
 " move _and_ scroll up one line with ^k
 nnoremap <C-K> 1<C-U>:set scroll=0<CR>
 
-vmap gqm :!par 'rTbegqR' 'B=.,?_A_a' 'Q=_s>\|'<CR>
-
 " my grep supports -H
 "set grepprg=grep\ -nH
 " make :grep work like :vimgrep
 set grepprg=internal
+
+"set formatprg=par\ 'rTw80begqR'\ 'B=.,?_A_a'\ 'Q=_s>\|'\ 'P=.'
+
