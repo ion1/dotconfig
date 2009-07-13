@@ -12,7 +12,7 @@ vf-add=pp=default/autolevels
 
 vf-pre=screenshot
 
-lavdopts=fast=1:skiploopfilter=all
+#lavdopts=fast=1:skiploopfilter=all
 #lavdopts=lowres=1:fast=1:skiploopfilter=all
 ## :skipidct=all:skipframe=nonref
 
