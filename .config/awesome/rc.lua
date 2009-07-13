@@ -111,6 +111,8 @@ shifty.config.apps = {
 
     { match = { "cellwriter", "Dasher", "^Do$", "Event Tester", "scim" }, float = true, intrusive = true },
 
+    { match = { "MPlayer", "Totem", "Vlc" }, float = true },
+
     { match = { "" }, honorsizehints = false },
 }
 
