@@ -97,7 +97,7 @@ shifty.config.apps = {
     { match = { "Navigator", "Firefox", "Shiretoko" }, tag = "web" },
 
     { match = { "gnome%-terminal" }, tag = "term" },
-    { match = { "^ssh$" },           tag = "ssh" },
+    { match = { },                   tag = "ssh" },
 
     { match = { "Gimp" },          tag = "gimp" },
     { match = { "gimp%-toolbox" }, struts = gimp_toolbox_struts,
