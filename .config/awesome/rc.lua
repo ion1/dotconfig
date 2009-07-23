@@ -417,4 +417,47 @@ end)
 --end)
 -- }}}
 
+-- {{{ Backlight control
+local backlight_low  = 40
+local backlight_high = 100
+
+local backlight_match = { "MPlayer", "Totem", "Vlc" }
+
+local backlight_cmd = "dbus-send --session --type=method_call " ..
+                      "--print-reply --dest=org.freedesktop.PowerManagement " ..
+                      "/org/freedesktop/PowerManagement/Backlight " ..
+                      "org.freedesktop.PowerManagement.Backlight.SetBrightness"
+
+local backlight_set = function (brightness)
+    awful.util.spawn(backlight_cmd .. " uint32:" .. tostring(brightness))
+end
+
+local backlight_bright = false
+backlight_set(backlight_low)
+
+awful.hooks.focus.register(function (c)
+    local new_bright = false
+
+    for _, v in pairs(backlight_match) do
+        if (c.cls and c.cls:find(v)) or
+           (c.instance and c.instance:find(v)) or
+           (c.name and c.name:find(v)) or
+           (c.type and c.type:find(v)) then
+            new_bright = true
+        end
+    end
+
+    if backlight_bright ~= new_bright then
+        local val
+        if new_bright then
+            val = backlight_high
+        else
+            val = backlight_low
+        end
+        backlight_set(val)
+        backlight_bright = new_bright
+    end
+end)
+-- }}}
+
 -- vim:set et sw=4 sts=4 foldmethod=marker:
