@@ -424,9 +424,9 @@ local backlight_high = 100
 local backlight_match = { "MPlayer", "Totem", "Vlc" }
 
 local backlight_cmd = "dbus-send --session --type=method_call " ..
-                      "--print-reply --dest=org.freedesktop.PowerManagement " ..
-                      "/org/freedesktop/PowerManagement/Backlight " ..
-                      "org.freedesktop.PowerManagement.Backlight.SetBrightness"
+                      "--print-reply --dest=org.gnome.PowerManager " ..
+                      "/org/gnome/PowerManager/Backlight " ..
+                      "org.gnome.PowerManager.Backlight.SetBrightness"
 
 local backlight_set = function (brightness)
     awful.util.spawn(backlight_cmd .. " uint32:" .. tostring(brightness))
