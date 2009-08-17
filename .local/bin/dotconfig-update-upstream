@@ -33,6 +33,7 @@ add_remote() {
   add_file "$mode" "$path" "$tempfile"
 }
 
+add_file 644 .abcde.conf /etc/abcde.conf
 add_file 644 .bashrc /etc/skel/.bashrc
 add_file 644 .config/awesome/rc.lua /etc/xdg/awesome/rc.lua
 add_file 644 .config/awesome/theme.lua /usr/share/awesome/themes/default/theme.lua
