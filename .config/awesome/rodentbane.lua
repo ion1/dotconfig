@@ -274,7 +274,8 @@ end
 function table_equals(t1, t2)
     -- Check first table
     for i, item in ipairs(t1) do
-        if awful.util.table.hasitem(t2, item) == nil then
+        if item ~= "Mod2" and 
+           awful.util.table.hasitem(t2, item) == nil then
             -- An unequal item was found
             return false
         end
@@ -282,7 +283,8 @@ function table_equals(t1, t2)
 
     -- Check second table
     for i, item in ipairs(t2) do
-        if awful.util.table.hasitem(t1, item) == nil then
+        if item ~= "Mod2" and 
+           awful.util.table.hasitem(t1, item) == nil then
             -- An unequal item was found
             return false
         end

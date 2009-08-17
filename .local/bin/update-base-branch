@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# update-base-branch – Update the contents of a Git branch with a script
+# update-base-branch – Track arbitrary external content in Git branch
 # Copyright © 2009 Johan Kiviniemi
 #
 # Permission to use, copy, modify, and/or distribute this software for any
@@ -21,7 +21,7 @@ myname="update-base-branch"
 
 usage() {
   cat <<E
-$myname – Update the contents of a Git branch with a script
+$myname – Track arbitrary external content in Git branch
 
 USAGE: $myname [OPTION]... -- SCRIPT [SCRIPT_OPTION]...
        $myname -w|--wrapper [OPTION]...
@@ -69,9 +69,14 @@ git_exclude_standard=true
 quiet=
 wrapper=
 
-opts="$(getopt -s sh -o hb:cqw \
-               -l help,branch:,checkout,no-exclude,quiet,wrapper \
-               -- "$@")"
+getopt=getopt
+if which gnugetopt >/dev/null 2>&1; then
+  getopt=gnugetopt
+fi
+
+opts="$("$getopt" -s sh -o hb:cqw \
+                  -l help,branch:,checkout,no-exclude,quiet,wrapper \
+                  -- "$@")"
 eval set -- "$opts"
 
 while true; do
@@ -99,7 +104,7 @@ shellquote() {
   local space=
   for arg; do
     printf '%s' "$space"
-    printf '%s' "$arg" | sed -re "s/'/'\"'\"'/g; s/^/'/; s/$/'/;"
+    printf '%s' "$arg" | sed -e "s/'/'\"'\"'/g; s/^/'/; s/$/'/;"
     space=' '
   done
   printf '\n'
@@ -148,7 +153,7 @@ export GIT_INDEX_FILE="$tempdir/index"
 export GIT_WORK_TREE="$tempdir/working-tree"
 mkdir -p "$GIT_WORK_TREE"
 
-export scratch="$tempdir/scratch-tree"
+scratch="$tempdir/scratch-tree"
 mkdir -p "$scratch"
 
 local_ref=refs/heads/"$branch"
@@ -176,10 +181,9 @@ run_script() {
   (
     local script="$1"; shift
 
-    # Resolve script’s full path.
+    # Resolve script’s full path if it’s not in PATH.
     case "$script" in
     */*) script="$(readlink -f "$script")" ;;
-    *)   script="$(which "$script")" ;;
     esac
 
     cd "$GIT_WORK_TREE"
@@ -234,5 +238,7 @@ fi
 run_script "$@"
 
 do_commit
+
+git gc --auto
 
 # vim:set et sw=2 sts=2:
