@@ -125,10 +125,9 @@ function send(idx)
   local scr = client.focus.screen or mouse.screen
   local sel = awful.tag.selected(scr)
   local sel_idx = tag2index(scr,sel)
-  local tags = screen[scr]:tags()
-  local target = awful.util.cycle(#tags, sel_idx + idx)
-  awful.client.movetotag(tags[target], client.focus)
-  awful.tag.viewonly(tags[target])
+  local target = awful.util.cycle(#screen[scr]:tags(), sel_idx + idx)
+  awful.tag.viewonly(screen[scr]:tags()[target])
+  awful.client.movetotag(screen[scr]:tags()[target], client.focus)
 end
 
 function send_next() send(1) end
@@ -287,8 +286,8 @@ function set(t, args)
   end
 
   -- set tag properties and push the new tag table
-  screen[scr]:tags(tags)
   for prop, val in pairs(props) do awful.tag.setproperty(t, prop, val) end
+  screen[scr]:tags(tags)
 
   -- execute run/spawn
   if awful.tag.getproperty(t, "initial") then
@@ -426,7 +425,7 @@ function match(c, startup)
           if a.ontop ~= nil then c.ontop = a.ontop end
           if a.above ~= nil then c.above = a.above end
           if a.below ~= nil then c.below = a.below end
-          if a.buttons ~= nil then c.buttons = a.buttons end
+          if a.buttons ~= nil then c:buttons(a.buttons) end
           if a.nofocus ~= nil then nofocus = a.nofocus end
           if a.keys ~= nil then keys = awful.util.table.join(keys, a.keys) end
           if a.hide ~= nil then c.hide = a.hide end
@@ -446,7 +445,7 @@ function match(c, startup)
   end
 
   -- set key bindings
-  c.keys = keys
+  c:keys(keys)
 
   -- set properties of floating clients
   if awful.client.floating.get(c) then
@@ -744,7 +743,7 @@ end
 function tagkeys(s)
   local sel = awful.tag.selected(s)
   local keys = awful.tag.getproperty(sel, "keys") or config.globalkeys
-  if keys then root.keys = keys end
+  if keys then root.keys(keys) end
 end
 -- }}}
 
@@ -773,7 +772,8 @@ end
 
 awful.hooks.manage.unregister(awful.tag.withcurrent)
 awful.hooks.tags.register(sweep)
-awful.hooks.tags.register(tagkeys)
+awful.hooks.arrange.register(sweep)
+awful.hooks.arrange.register(tagkeys)
 awful.hooks.clients.register(sweep)
 awful.hooks.manage.register(match)
 
