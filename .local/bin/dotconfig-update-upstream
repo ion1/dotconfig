@@ -41,7 +41,7 @@ add_file 644 .devscripts /usr/share/devscripts/conf.default
 add_file 644 .mplayer/input.conf /etc/mplayer/input.conf
 
 rodentbane_uri='http://git.glacicle.com/?p=awesome/rodentbane.git;a=blob_plain;f=rodentbane.lua;hb=HEAD'
-shifty_uri='http://git.mercenariesguild.net/?p=awesome.git;a=blob_plain;f=lib/shifty.lua.in;hb=shifty-master'
+shifty_uri='http://git.mercenariesguild.net/?p=awesome.git;a=blob_plain;f=lib/shifty.lua.in;hb=shifty'
 update_base_branch_uri='http://github.com/ion1/update-base-branch/raw/master/update-base-branch'
 ximkeys_uri='http://www.pixelbeat.org/scripts/ximkeys'
 
