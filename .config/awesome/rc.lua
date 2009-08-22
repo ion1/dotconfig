@@ -420,7 +420,7 @@ end)
 local backlight_low  = 40
 local backlight_high = 100
 
-local backlight_match = { "MPlayer", "Totem", "Vlc" }
+local backlight_match = { "Miro", "MPlayer", "Totem", "Vlc" }
 
 local backlight_cmd = "dbus-send --session --type=method_call " ..
                       "--print-reply --dest=org.gnome.PowerManager " ..
