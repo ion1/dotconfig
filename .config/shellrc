@@ -72,6 +72,9 @@ fi
 # aliases
 
 alias grep="grep --color=auto"
+alias fgrep="fgrep --color=auto"
+alias egrep="egrep --color=auto"
+alias rgrep="rgrep --color=auto"
 
 if which colordiff >&/dev/null; then
   alias diff="colordiff"
