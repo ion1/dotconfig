@@ -16,7 +16,7 @@
 # descriptions and default values will be appended as comments
 # to this file.
 
-# Variables recognised as of devscripts version 2.10.48ubuntu2:
+# Variables recognised as of devscripts version 2.10.53ubuntu2:
 
 ##### Package-wide variables
 # 
@@ -200,6 +200,11 @@
 # Attempt to automatically determine whether the current changelog
 # stanza represents an NMU?
 # DEBCHANGE_AUTO_NMU=yes
+#
+# When --release was used and an editor presented, force the changelog
+# to be explicitly saved in the editor?  If this is set to "no" then
+# the changes made by --release will be automatically saved.
+# DEBCHANGE_FORCE_SAVE_ON_RELEASE=yes
 
 ##### debcheckout
 #
@@ -267,7 +272,7 @@
 
 ##### debrelease
 # 
-# This specifies which uploader program to use.  As of devscripts 2.10.48ubuntu2
+# This specifies which uploader program to use.  As of devscripts 2.10.53ubuntu2
 # the recognised values are "dupload" (default) and "dput".  Check the
 # debrelease(1) manpage for any recent changes to this variable
 # DEBRELEASE_UPLOADER=dupload
@@ -292,7 +297,7 @@
 # DEBSIGN_PROGRAM=
 # 
 # How the signing program works; must be either gpg or pgp as of
-# devscripts version 2.10.48ubuntu2.  The default is described in the
+# devscripts version 2.10.53ubuntu2.  The default is described in the
 # manpage.  Corresponds to -sgpg and -spgp.
 # DEBSIGN_SIGNLIKE=
 # 
@@ -519,6 +524,9 @@
 # can use it with -u without having to specify the full URL
 # 
 # RMADISON_URL_MAP_EXAMPLE=http://example.com/madison.cgi
+#
+# Default URL to use if none is specified on the command line.
+# RMADISON_DEFAULT_URL=debian
 
 ##### svnpath
 # 
