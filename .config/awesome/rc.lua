@@ -459,4 +459,8 @@ awful.hooks.focus.register(function (c)
 end)
 -- }}}
 
+-- {{{ Startup programs
+os.execute('(killall -0 -u "$(id -nu)" xcompmgr 2>/dev/null || exec xcompmgr) &')
+-- }}}
+
 -- vim:set et sw=4 sts=4 foldmethod=marker:
