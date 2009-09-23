@@ -5,7 +5,8 @@ gtk-font-name = "Sans 8"
 gtk-theme-name = "Human"
 
 # /desktop/gnome/interface/icon_theme
-gtk-icon-theme-name = "Tangerine"
+#gtk-icon-theme-name = "Tangerine"
+gtk-icon-theme-name = "Human"
 
 # /desktop/gnome/interface/gtk_key_theme
 gtk-key-theme-name = "Emacs"
