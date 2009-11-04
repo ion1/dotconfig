@@ -6,19 +6,19 @@ theme = {}
 
 theme.font          = "sans 8"
 
-theme.bg_normal     = "#efebe7"
-theme.bg_focus      = "#d6722d"
+theme.bg_normal     = "#e6ddd5"
+theme.bg_focus      = "#8f5f4a"
 theme.bg_urgent     = "#ff0000"
-theme.bg_minimize   = "#efebe7"
+theme.bg_minimize   = "#e6ddd5"
 
 theme.fg_normal     = "#101010"
-theme.fg_focus      = "#101010"
+theme.fg_focus      = "#ffffff"
 theme.fg_urgent     = "#ffffff"
-theme.fg_minimize   = "#807e7c"
+theme.fg_minimize   = "#96908a"
 
 theme.border_width  = "0"
-theme.border_normal = "#efebe7"
-theme.border_focus  = "#d6722d"
+theme.border_normal = "#e6ddd5"
+theme.border_focus  = "#8f5f4a"
 theme.border_marked = "#91231c"
 
 -- There are another variables sets
