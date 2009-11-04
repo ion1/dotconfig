@@ -66,7 +66,6 @@ function init()
     -- Create wibox for each border
     for i, border in ipairs(borders) do
         wiboxes[border] = capi.wibox({
-            position = "floating",
             bg = beautiful.rodentbane_bg or beautiful.border_focus or "#C50B0B",
             ontop = true,
         })
