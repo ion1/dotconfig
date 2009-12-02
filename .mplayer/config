@@ -16,6 +16,11 @@ vf-pre=screenshot
 #lavdopts=lowres=1:fast=1:skiploopfilter=all
 ## :skipidct=all:skipframe=nonref
 
+brightness=0
+contrast=0
+hue=0
+saturation=0
+
 ao=pulse,alsa,
 
 slang=en,fi
