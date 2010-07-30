@@ -11,20 +11,16 @@
 set -o vi
 
 # don't put duplicate lines in the history. See bash(1) for more options
-# don't overwrite GNU Midnight Commander's setting of `ignorespace'.
-#HISTCONTROL=$HISTCONTROL${HISTCONTROL+,}ignoredups
-# ... or force ignoredups and ignorespace
-#HISTCONTROL=ignoreboth
+HISTCONTROL=erasedups:ignorespace
 
-export HISTCONTROL=ignorespace,erasedups
-export HISTTIMEFORMAT="%d-%H%M%S  "
+HISTTIMEFORMAT="%d-%H%M%S  "
 
 # append to the history file, don't overwrite it
 shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-export HISTSIZE=10000
-export HISTFILESIZE=10000
+HISTSIZE=10000
+HISTFILESIZE=10000
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -49,6 +45,11 @@ if tput hs 2>/dev/null; then
   # Set the title to user@host: dir
   PROMPT_COMMAND="$PROMPT_COMMAND"' tput tsl 2>/dev/null; printf "%s@%s: %s" "$USER" "$HOSTNAME" "${PWD/$HOME/~}"; tput fsl 2>/dev/null;'
 fi
+
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
