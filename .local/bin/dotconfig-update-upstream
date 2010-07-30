@@ -35,18 +35,12 @@ add_remote() {
 
 add_file 644 .abcde.conf /etc/abcde.conf
 add_file 644 .bashrc /etc/skel/.bashrc
-add_file 644 .config/awesome/rc.lua /etc/xdg/awesome/rc.lua
-add_file 644 .config/awesome/theme.lua /usr/share/awesome/themes/default/theme.lua
 add_file 644 .devscripts /usr/share/devscripts/conf.default
 add_file 644 .mplayer/input.conf /etc/mplayer/input.conf
 
-rodentbane_uri='http://git.glacicle.com/cgit.cgi/rodentbane/plain/rodentbane.lua'
-shifty_uri='http://git.mercenariesguild.net/?p=awesome.git;a=blob_plain;f=lib/shifty.lua.in;hb=shifty-master'
 update_base_branch_uri='http://github.com/ion1/update-base-branch/raw/master/update-base-branch'
 ximkeys_uri='http://www.pixelbeat.org/scripts/ximkeys'
 
-add_remote 644 .config/awesome/rodentbane.lua "$rodentbane_uri"
-add_remote 644 .config/awesome/shifty.lua "$shifty_uri"
 add_remote 755 .local/bin/update-base-branch "$update_base_branch_uri"
 add_remote 755 .local/bin/ximkeys "$ximkeys_uri"
 
