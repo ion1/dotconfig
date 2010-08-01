@@ -1,3 +1,5 @@
+umask 022
+
 if ! tput hs 2>/dev/null; then
   # Our terminfo doesn't have a statusline.
   addinfo=
