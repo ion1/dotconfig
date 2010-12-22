@@ -6,3 +6,5 @@
 	branch = auto
 	diff = auto
 	status = auto
+[rerere]
+	enabled = true
