@@ -3,8 +3,6 @@
 #	email = you@example.net
 #	signingkey = 12345678
 [color]
-	branch = auto
-	diff = auto
-	status = auto
+	ui = auto
 [rerere]
 	enabled = true
