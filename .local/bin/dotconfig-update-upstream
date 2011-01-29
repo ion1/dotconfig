@@ -28,7 +28,7 @@ add_remote() {
   printf "Downloading %s\n" "$uri"
 
   local tempfile="$SCRATCH/tempfile"
-  2>&3 wget -O "$tempfile" "$uri"
+  2>&3 wget --no-check-certificate -O "$tempfile" "$uri"
 
   add_file "$mode" "$path" "$tempfile"
 }
