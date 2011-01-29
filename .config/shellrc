@@ -34,6 +34,9 @@ fi
 
 export PATH="$PATH:/usr/local/bin:$HOME/.local/bin"
 
+# cabal
+export PATH="$PATH:$HOME/.cabal/bin"
+
 # rubygems
 export PATH="$PATH:/var/lib/gems/1.8/bin"
 
