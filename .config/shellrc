@@ -38,7 +38,11 @@ export PATH="$PATH:/usr/local/bin:$HOME/.local/bin"
 export PATH="$PATH:$HOME/.cabal/bin"
 
 # rubygems
-export PATH="$PATH:/var/lib/gems/1.8/bin"
+for d in /var/lib/gems/*/bin; do
+  if [ -d "$d" ]; then
+    export PATH="$PATH:$d"
+  fi
+done
 
 # icecc
 if [ -d "/usr/lib/icecc/bin" ]; then
