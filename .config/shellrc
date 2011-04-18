@@ -37,6 +37,9 @@ export PATH="$PATH:/usr/local/bin:$HOME/.local/bin"
 # cabal
 export PATH="$PATH:$HOME/.cabal/bin"
 
+# ghci environment
+alias ghcie='ghci "$HOME/.local/share/GHCiEnv.hs"'
+
 # rubygems
 for d in /var/lib/gems/*/bin; do
   if [ -d "$d" ]; then
