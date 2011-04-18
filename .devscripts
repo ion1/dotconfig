@@ -16,7 +16,7 @@
 # descriptions and default values will be appended as comments
 # to this file.
 
-# Variables recognised as of devscripts version 2.10.69ubuntu1:
+# Variables recognised as of devscripts version 2.10.69ubuntu2:
 
 ##### Package-wide variables
 # 
@@ -276,7 +276,7 @@ DEBCHANGE_RELEASE_HEURISTIC=changelog
 
 ##### debrelease
 # 
-# This specifies which uploader program to use.  As of devscripts 2.10.69ubuntu1
+# This specifies which uploader program to use.  As of devscripts 2.10.69ubuntu2
 # the recognised values are "dupload" (default) and "dput".  Check the
 # debrelease(1) manpage for any recent changes to this variable
 # DEBRELEASE_UPLOADER=dupload
@@ -301,7 +301,7 @@ DEBCHANGE_RELEASE_HEURISTIC=changelog
 # DEBSIGN_PROGRAM=
 # 
 # How the signing program works; must be either gpg or pgp as of
-# devscripts version 2.10.69ubuntu1.  The default is described in the
+# devscripts version 2.10.69ubuntu2.  The default is described in the
 # manpage.  Corresponds to -sgpg and -spgp.
 # DEBSIGN_SIGNLIKE=
 # 
